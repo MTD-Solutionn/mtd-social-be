@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-
+console.log('src/setupDatabase.ts');
 export default () => {
   const connect = async () => {
     try {
