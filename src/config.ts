@@ -10,6 +10,7 @@ class Config {
   public readonly SECRET_KEY_ONE: string | undefined;
   public readonly SECRET_KEY_TWO: string | undefined;
   public readonly CLIENT_URL: string | undefined;
+  public readonly REDIS_HOST: string | undefined;
 
   constructor() {
     this.DATABASE_URL = process.env.DATABASE_URL;
@@ -18,6 +19,7 @@ class Config {
     this.SECRET_KEY_ONE = process.env.SECRET_KEY_ONE;
     this.SECRET_KEY_TWO = process.env.SECRET_KEY_TWO;
     this.CLIENT_URL = process.env.CLIENT_URL;
+    this.REDIS_HOST = process.env.REDIS_HOST;
   }
   public validateConfig(): void {
     for (const [key, value] of Object.entries(this)) {
