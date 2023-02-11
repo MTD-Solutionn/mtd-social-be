@@ -80,13 +80,19 @@ export class ChattyServer {
         methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
       },
     });
-    const pubClient = createClient({ url: config.REDIS_HOST });
-    const subClient = pubClient.duplicate();
-    await Promise.all([pubClient.connect(), subClient.connect()]);
-    io.adapter(createAdapter(pubClient, subClient));
+    try {
+      const pubClient = createClient({ url: config.REDIS_HOST });
+      const subClient = pubClient.duplicate();
+      await Promise.all([pubClient.connect(), subClient.connect()]);
+      io.adapter(createAdapter(pubClient, subClient));
+    } catch (error) {
+      console.log(`Fail to connect to Redis database`, error);
+      process.exit(1);
+    }
     return io;
   }
   private startHttpServer(httpServer: http.Server): void {
+    console.log(`Server has started with process ${process.pid}`);
     httpServer.listen(SERVER_PORT, () => {
       console.log(`Server running on port : ${SERVER_PORT}`);
     });
