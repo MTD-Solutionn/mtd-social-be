@@ -18,6 +18,7 @@ import { Server } from 'socket.io';
 import { createClient } from 'redis';
 import { createAdapter } from '@socket.io/redis-adapter';
 import { config } from './config';
+import routes from './routes';
 
 console.log('src/setupServer.ts');
 
@@ -60,7 +61,9 @@ export class ChattyServer {
     app.use(json({ limit: '50mb' }));
     app.use(urlencoded({ extended: true, limit: '50mb' }));
   }
-  private routesMiddleware(app: Application): void {}
+  private routesMiddleware(app: Application): void {
+    routes(app);
+  }
   private globalErrorHandler(app: Application): void {}
   private async startServer(app: Application): Promise<void> {
     try {
