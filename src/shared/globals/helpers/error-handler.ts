@@ -1,4 +1,5 @@
 import HTTP_STATUS from 'http-status-codes';
+console.log('src/shared/globals/helpers/error-handler.ts');
 
 export interface IErrorResponse {
   message: string;
