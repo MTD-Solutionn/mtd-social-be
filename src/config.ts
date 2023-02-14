@@ -1,4 +1,5 @@
 import dotenv from 'dotenv';
+import bunyan from 'bunyan';
 
 console.log('src/config.ts');
 dotenv.config({});
@@ -20,6 +21,9 @@ class Config {
     this.SECRET_KEY_TWO = process.env.SECRET_KEY_TWO;
     this.CLIENT_URL = process.env.CLIENT_URL;
     this.REDIS_HOST = process.env.REDIS_HOST;
+  }
+  public createLogger(name: string): bunyan {
+    return bunyan.createLogger({ name, level: 'debug' });
   }
   public validateConfig(): void {
     for (const [key, value] of Object.entries(this)) {

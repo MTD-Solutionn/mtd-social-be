@@ -17,6 +17,7 @@ import 'express-async-errors';
 import { Server } from 'socket.io';
 import { createClient } from 'redis';
 import { createAdapter } from '@socket.io/redis-adapter';
+import Logger from 'bunyan';
 import { config } from './config';
 import routes from './routes';
 import {
@@ -27,6 +28,7 @@ import {
 console.log('src/setupServer.ts');
 
 const SERVER_PORT = 5000;
+const log: Logger = config.createLogger('setupServer');
 
 export class ChattyServer {
   private app: Application;
@@ -95,7 +97,7 @@ export class ChattyServer {
       this.startHttpServer(httpServer);
       this.socketIOConnections(socketIO);
     } catch (error) {
-      console.log(error);
+      log.error(error);
     }
   }
 
@@ -112,15 +114,15 @@ export class ChattyServer {
       await Promise.all([pubClient.connect(), subClient.connect()]);
       io.adapter(createAdapter(pubClient, subClient));
     } catch (error) {
-      console.log(`Fail to connect to Redis database`, error);
+      log.error(error);
       process.exit(1);
     }
     return io;
   }
   private startHttpServer(httpServer: http.Server): void {
-    console.log(`Server has started with process ${process.pid}`);
+    log.info(`Server has started with process ${process.pid}`);
     httpServer.listen(SERVER_PORT, () => {
-      console.log(`Server running on port : ${SERVER_PORT}`);
+      log.info(`Server running on port : ${SERVER_PORT}`);
     });
   }
   private socketIOConnections(io: Server): void {}
