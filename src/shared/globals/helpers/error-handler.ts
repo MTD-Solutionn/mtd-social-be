@@ -23,7 +23,7 @@ export abstract class CustomerError extends Error {
     return {
       message: this.message,
       status: this.status,
-      statusCode: this.statusCode,
+      statusCode: this.statusCode
     };
   }
 }

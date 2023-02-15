@@ -27,8 +27,7 @@ class Config {
   }
   public validateConfig(): void {
     for (const [key, value] of Object.entries(this)) {
-      if (value === undefined || value === '')
-        throw new Error(`Value of ${key} is ${value}`);
+      if (value === undefined || value === '') throw new Error(`Value of ${key} is ${value}`);
     }
   }
 }

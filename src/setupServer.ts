@@ -1,11 +1,4 @@
-import {
-  Application,
-  json,
-  urlencoded,
-  Response,
-  Request,
-  NextFunction,
-} from 'express';
+import { Application, json, urlencoded, Response, Request, NextFunction } from 'express';
 import http from 'http';
 import cors from 'cors';
 import helmet from 'helmet';
@@ -20,10 +13,7 @@ import { createAdapter } from '@socket.io/redis-adapter';
 import Logger from 'bunyan';
 import { config } from './config';
 import routes from './routes';
-import {
-  CustomerError,
-  IErrorResponse,
-} from './shared/globals/helpers/error-handler';
+import { CustomerError, IErrorResponse } from './shared/globals/helpers/error-handler';
 
 console.log('src/setupServer.ts');
 
@@ -48,8 +38,8 @@ export class ChattyServer {
         name: 'session',
         keys: [config.SECRET_KEY_ONE!, config.SECRET_KEY_TWO!],
         maxAge: 24 * 7 * 3600000,
-        secure: config.NODE_ENV !== 'development',
-      }),
+        secure: config.NODE_ENV !== 'development'
+      })
     );
     app.use(hpp());
     app.use(helmet());
@@ -58,8 +48,8 @@ export class ChattyServer {
         origin: config.CLIENT_URL,
         credentials: true,
         optionsSuccessStatus: 200,
-        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-      }),
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+      })
     );
   }
   private standardMiddleware(app: Application): void {
@@ -72,23 +62,14 @@ export class ChattyServer {
   }
   private globalErrorHandler(app: Application): void {
     app.all('*', (req: Request, res: Response) => {
-      res
-        .status(HTTP_STATUS.NOT_FOUND)
-        .json({ message: `${req.originalUrl} not found` });
+      res.status(HTTP_STATUS.NOT_FOUND).json({ message: `${req.originalUrl} not found` });
     });
-    app.use(
-      (
-        error: IErrorResponse,
-        req: Request,
-        res: Response,
-        next: NextFunction,
-      ) => {
-        console.log(error);
-        if (error instanceof CustomerError) {
-          return res.status(error.statusCode).json(error.serializeErrors());
-        }
-      },
-    );
+    app.use((error: IErrorResponse, req: Request, res: Response, next: NextFunction) => {
+      console.log(error);
+      if (error instanceof CustomerError) {
+        return res.status(error.statusCode).json(error.serializeErrors());
+      }
+    });
   }
   private async startServer(app: Application): Promise<void> {
     try {
@@ -105,8 +86,8 @@ export class ChattyServer {
     const io: Server = new Server(httpServer, {
       cors: {
         origin: config.CLIENT_URL,
-        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-      },
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+      }
     });
     try {
       const pubClient = createClient({ url: config.REDIS_HOST });
