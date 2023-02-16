@@ -11,9 +11,10 @@ import { Server } from 'socket.io';
 import { createClient } from 'redis';
 import { createAdapter } from '@socket.io/redis-adapter';
 import Logger from 'bunyan';
-import { config } from './config';
-import routes from './routes';
-import { CustomerError, IErrorResponse } from './shared/globals/helpers/error-handler';
+//
+import { config } from '@root/config';
+import routes from '@root/routes';
+import { CustomerError, IErrorResponse } from '@global/helpers/error-handler';
 
 console.log('src/setupServer.ts');
 
@@ -106,5 +107,7 @@ export class ChattyServer {
       log.info(`Server running on port : ${SERVER_PORT}`);
     });
   }
-  private socketIOConnections(io: Server): void {}
+  private socketIOConnections(io: Server): void {
+    log.info('prevent eslint error check');
+  }
 }
