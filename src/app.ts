@@ -1,10 +1,8 @@
 import express, { Express } from 'express';
-//
-import { ChattyServer } from '@root/setupServer';
-import connectDatabase from '@root/setupDatabase';
-import { config } from '@root/config';
+import { ChattyServer } from '@/setupServer';
+import connectDatabase from '@/setupDatabase';
+import { config } from '@/config';
 
-console.log('src/app.ts');
 class Application {
   public initialize(): void {
     this.loadConfig();

@@ -1,8 +1,7 @@
 import dotenv from 'dotenv';
 import bunyan from 'bunyan';
 import cloudinary from 'cloudinary';
-//
-console.log('src/config.ts');
+
 dotenv.config({});
 
 class Config {

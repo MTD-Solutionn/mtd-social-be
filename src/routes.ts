@@ -1,8 +1,7 @@
 import { Application } from 'express';
-//
-console.log('src/routes.ts');
-const routes = (app: Application) => {
-  console.log('prevent eslint error check');
-};
+import { BASE_PATH } from '@shared/constants/router';
+import { authRouter } from '@features/auth/routers/auth.router';
 
-export default routes;
+export const setUpAppRouter = (app: Application) => {
+  app.use(BASE_PATH, authRouter.registerRoutes());
+};

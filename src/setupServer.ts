@@ -11,26 +11,30 @@ import { Server } from 'socket.io';
 import { createClient } from 'redis';
 import { createAdapter } from '@socket.io/redis-adapter';
 import Logger from 'bunyan';
-//
-import { config } from '@root/config';
-import routes from '@root/routes';
-import { CustomerError, IErrorResponse } from '@global/helpers/error-handler';
+import { config } from '@/config';
+import { setUpAppRouter } from '@/routes';
+import { CustomerError, IErrorResponse } from '@shared/globals/helpers/error-handler';
 
-console.log('src/setupServer.ts');
+const SERVER_PORT = 2704;
 
-const SERVER_PORT = 5000;
 const log: Logger = config.createLogger('setupServer');
 
 export class ChattyServer {
   private app: Application;
+
   constructor(app: Application) {
     this.app = app;
   }
+
   public start(): void {
     this.securityMiddleware(this.app);
+
     this.standardMiddleware(this.app);
+
     this.routesMiddleware(this.app);
+
     this.globalErrorHandler(this.app);
+
     this.startServer(this.app);
   }
   private securityMiddleware(app: Application): void {
@@ -42,8 +46,11 @@ export class ChattyServer {
         secure: config.NODE_ENV !== 'development'
       })
     );
+
     app.use(hpp());
+
     app.use(helmet());
+
     app.use(
       cors({
         origin: config.CLIENT_URL,
@@ -55,18 +62,20 @@ export class ChattyServer {
   }
   private standardMiddleware(app: Application): void {
     app.use(compression());
+
     app.use(json({ limit: '50mb' }));
+
     app.use(urlencoded({ extended: true, limit: '50mb' }));
   }
   private routesMiddleware(app: Application): void {
-    routes(app);
+    setUpAppRouter(app);
   }
   private globalErrorHandler(app: Application): void {
     app.all('*', (req: Request, res: Response) => {
       res.status(HTTP_STATUS.NOT_FOUND).json({ message: `${req.originalUrl} not found` });
     });
+
     app.use((error: IErrorResponse, req: Request, res: Response, next: NextFunction) => {
-      console.log(error);
       if (error instanceof CustomerError) {
         return res.status(error.statusCode).json(error.serializeErrors());
       }
@@ -75,8 +84,11 @@ export class ChattyServer {
   private async startServer(app: Application): Promise<void> {
     try {
       const httpServer: http.Server = new http.Server(app);
+
       const socketIO: Server = await this.createSocketIO(httpServer);
+
       this.startHttpServer(httpServer);
+
       this.socketIOConnections(socketIO);
     } catch (error) {
       log.error(error);
@@ -90,19 +102,25 @@ export class ChattyServer {
         methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
       }
     });
+
     try {
       const pubClient = createClient({ url: config.REDIS_HOST });
+
       const subClient = pubClient.duplicate();
+
       await Promise.all([pubClient.connect(), subClient.connect()]);
+
       io.adapter(createAdapter(pubClient, subClient));
     } catch (error) {
       log.error(error);
+
       process.exit(1);
     }
     return io;
   }
   private startHttpServer(httpServer: http.Server): void {
     log.info(`Server has started with process ${process.pid}`);
+
     httpServer.listen(SERVER_PORT, () => {
       log.info(`Server running on port : ${SERVER_PORT}`);
     });

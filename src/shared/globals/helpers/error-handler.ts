@@ -1,5 +1,4 @@
 import HTTP_STATUS from 'http-status-codes';
-console.log('src/shared/globals/helpers/error-handler.ts');
 
 export interface IErrorResponse {
   message: string;
@@ -13,12 +12,15 @@ export interface IError {
   statusCode: number;
   status: string;
 }
+
 export abstract class CustomerError extends Error {
   abstract statusCode: number;
   abstract status: string;
+
   constructor(message: string) {
     super(message);
   }
+
   serializeErrors(): IError {
     return {
       message: this.message,
@@ -30,6 +32,7 @@ export abstract class CustomerError extends Error {
 export class JoiRequestValidationError extends CustomerError {
   statusCode = HTTP_STATUS.BAD_REQUEST;
   status = 'error';
+
   constructor(message: string) {
     super(message);
   }
@@ -38,6 +41,7 @@ export class JoiRequestValidationError extends CustomerError {
 export class BadRequestError extends CustomerError {
   statusCode = HTTP_STATUS.BAD_REQUEST;
   status = 'error';
+
   constructor(message: string) {
     super(message);
   }
@@ -46,6 +50,7 @@ export class BadRequestError extends CustomerError {
 export class NotFoundError extends CustomerError {
   statusCode = HTTP_STATUS.NOT_FOUND;
   status = 'error';
+
   constructor(message: string) {
     super(message);
   }
@@ -53,6 +58,7 @@ export class NotFoundError extends CustomerError {
 export class NotAuthorizedError extends CustomerError {
   statusCode = HTTP_STATUS.UNAUTHORIZED;
   status = 'error';
+
   constructor(message: string) {
     super(message);
   }
@@ -61,6 +67,7 @@ export class NotAuthorizedError extends CustomerError {
 export class FileTooLargeError extends CustomerError {
   statusCode = HTTP_STATUS.REQUEST_TOO_LONG;
   status = 'error';
+
   constructor(message: string) {
     super(message);
   }
@@ -69,6 +76,7 @@ export class FileTooLargeError extends CustomerError {
 export class ServerError extends CustomerError {
   statusCode = HTTP_STATUS.SERVICE_UNAVAILABLE;
   status = 'error';
+
   constructor(message: string) {
     super(message);
   }
